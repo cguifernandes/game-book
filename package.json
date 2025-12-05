@@ -9,7 +9,9 @@
     "elysia": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prettier": "^3.7.4",
+    "prettier-plugin-organize-imports": "^4.3.0"
   },
   "module": "src/index.js"
 }
