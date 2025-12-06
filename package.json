@@ -6,12 +6,20 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.0",
+    "@elysiajs/openapi": "^1.4.11",
+    "@prisma/adapter-libsql": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "better-auth": "^1.4.5",
+    "better-sqlite3": "^12.5.0",
     "elysia": "latest"
   },
   "devDependencies": {
     "bun-types": "latest",
     "prettier": "^3.7.4",
-    "prettier-plugin-organize-imports": "^4.3.0"
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prisma": "^7.1.0"
   },
   "module": "src/index.js"
 }
