@@ -1,22 +1,23 @@
 import { PrismaClient } from "@/generated/prisma/client"
-import { PrismaLibSql } from "@prisma/adapter-libsql"
+import { PrismaPg } from "@prisma/adapter-pg"
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { openAPI } from "better-auth/plugins"
 
-const adapter = new PrismaLibSql({ url: process.env.DATABASE_URL || "" })
+const connectionString = `${process.env.DATABASE_URL}`
+
+const adapter = new PrismaPg({ connectionString })
 const prisma = new PrismaClient({ adapter })
 
 export const auth = betterAuth({
   basePath: "/api/auth",
   plugins: [openAPI()],
   database: prismaAdapter(prisma, {
-    provider: "sqlite",
+    provider: "postgresql",
     usePlural: true
   }),
   emailAndPassword: {
     enabled: true,
-    autoSignIn: true,
     password: {
       hash(password) {
         return Bun.password.hash(password, { algorithm: "bcrypt" })

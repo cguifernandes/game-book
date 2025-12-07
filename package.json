@@ -8,12 +8,13 @@
   "dependencies": {
     "@elysiajs/cors": "^1.4.0",
     "@elysiajs/openapi": "^1.4.11",
-    "@prisma/adapter-libsql": "^7.1.0",
+    "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
-    "@types/better-sqlite3": "^7.6.13",
+    "@types/pg": "^8.15.6",
     "better-auth": "^1.4.5",
-    "better-sqlite3": "^12.5.0",
-    "elysia": "latest"
+    "dotenv": "^17.2.3",
+    "elysia": "latest",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "bun-types": "latest",
