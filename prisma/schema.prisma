@@ -23,6 +23,7 @@ model Users {
 
   accounts Accounts[]
   sessions Sessions[]
+  games    UserGames[]
 }
 
 model Accounts {
@@ -67,4 +68,50 @@ model Verifications {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
+}
+
+model Games {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  coverImage  String?
+  releaseDate DateTime?
+  developer   String?
+  publisher   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  users UserGames[]
+
+  @@index([name])
+  @@index([slug])
+}
+
+model UserGames {
+  id          String     @id @default(cuid())
+  userId      String
+  gameId      String
+  status      GameStatus @default(WANT_TO_PLAY)
+  rating      Int? // 1-5 estrelas
+  review      String?    @db.Text
+  completedAt DateTime?
+  addedAt     DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Games @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@index([userId])
+  @@index([gameId])
+  @@index([status])
+}
+
+enum GameStatus {
+  WANT_TO_PLAY
+  PLAYING
+  COMPLETED
+  ON_HOLD
+  DROPPED
 }

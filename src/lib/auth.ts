@@ -7,7 +7,7 @@ import { openAPI } from "better-auth/plugins"
 const connectionString = `${process.env.DATABASE_URL}`
 
 const adapter = new PrismaPg({ connectionString })
-const prisma = new PrismaClient({ adapter })
+export const prisma = new PrismaClient({ adapter })
 
 export const auth = betterAuth({
   basePath: "/api/auth",
