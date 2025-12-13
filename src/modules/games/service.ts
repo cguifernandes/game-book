@@ -1,7 +1,7 @@
 import { Games, Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/lib/auth"
 import { PaginatedResult } from "@/utils/utils"
-import { SearchGamesQuery } from "./schemas"
+import { CreateGameInput, SearchGamesQuery, UpdateGameInput } from "./schemas"
 
 export class GamesService {
   async getAll(query: SearchGamesQuery): Promise<PaginatedResult<Games>> {
@@ -54,5 +54,99 @@ export class GamesService {
         hasPrev
       }
     }
+  }
+
+  async create(data: CreateGameInput): Promise<Games> {
+    const existingGame = await prisma.games.findUnique({
+      where: { slug: data.slug }
+    })
+
+    if (existingGame) {
+      throw new Error(`Jogo com slug "${data.slug}" já existe`)
+    }
+
+    const releaseDate = data.releaseDate
+      ? typeof data.releaseDate === "string"
+        ? new Date(data.releaseDate)
+        : data.releaseDate
+      : null
+
+    const game = await prisma.games.create({
+      data: {
+        ...data,
+        releaseDate
+      }
+    })
+
+    return game
+  }
+
+  async getById(id: string): Promise<Games> {
+    const game = await prisma.games.findUnique({
+      where: { id }
+    })
+
+    if (!game) {
+      throw new Error(`Jogo com ID "${id}" não encontrado`)
+    }
+
+    return game
+  }
+
+  async update(id: string, data: UpdateGameInput): Promise<Games> {
+    const existingGame = await prisma.games.findUnique({
+      where: { id }
+    })
+
+    if (!existingGame) {
+      throw new Error(`Jogo com ID "${id}" não encontrado`)
+    }
+
+    if (data.slug && data.slug !== existingGame.slug) {
+      const slugExists = await prisma.games.findUnique({
+        where: { slug: data.slug }
+      })
+
+      if (slugExists) {
+        throw new Error(`Jogo com slug "${data.slug}" já existe`)
+      }
+    }
+
+    const releaseDate = data.releaseDate
+      ? typeof data.releaseDate === "string"
+        ? new Date(data.releaseDate)
+        : data.releaseDate
+      : undefined
+
+    const updateData: Prisma.GamesUpdateInput = {
+      ...(data.name && { name: data.name }),
+      ...(data.slug && { slug: data.slug }),
+      ...(data.description !== undefined && { description: data.description }),
+      ...(data.coverImage !== undefined && { coverImage: data.coverImage }),
+      ...(releaseDate !== undefined && { releaseDate }),
+      ...(data.developer !== undefined && { developer: data.developer }),
+      ...(data.publisher !== undefined && { publisher: data.publisher })
+    }
+
+    const game = await prisma.games.update({
+      where: { id },
+      data: updateData
+    })
+
+    return game
+  }
+
+  async delete(id: string): Promise<void> {
+    const game = await prisma.games.findUnique({
+      where: { id }
+    })
+
+    if (!game) {
+      throw new Error(`Jogo com ID "${id}" não encontrado`)
+    }
+
+    await prisma.games.delete({
+      where: { id }
+    })
   }
 }
