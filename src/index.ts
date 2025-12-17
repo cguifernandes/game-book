@@ -3,6 +3,7 @@ import openapi from "@elysiajs/openapi"
 import { Elysia } from "elysia"
 import { betterAuthProvider, OpenAPI } from "./lib/authProvider"
 import { games } from "./modules/games"
+import { reviews } from "./modules/reviews"
 import { formatErrorMessage } from "./utils/utils"
 
 const PORT = process.env.PORT || 3000
@@ -66,6 +67,7 @@ const app = new Elysia()
   })
   .use(betterAuthProvider)
   .use(games)
+  .use(reviews)
   .listen(PORT)
 
 console.log(`Server is running on ${app.server?.hostname}:${app.server?.port}`)
