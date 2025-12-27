@@ -28,29 +28,25 @@ const app = new Elysia()
       set.status = 400
 
       const validationError = error as any
-      let errorMessage = error.message
       let validationErrors: any[] = []
 
       if (validationError.errors && Array.isArray(validationError.errors)) {
         validationErrors = validationError.errors.map((err: any) =>
           formatErrorMessage(err, validationError.property)
         )
-        errorMessage = validationErrors.map(err => `${err.field}: ${err.message}`).join("; ")
       } else {
-        try {
-          const parsed = JSON.parse(error.message)
-          if (parsed.errors && Array.isArray(parsed.errors)) {
-            validationErrors = parsed.errors.map((err: any) =>
-              formatErrorMessage(err, parsed.property)
-            )
-            errorMessage = validationErrors.map(err => `${err.field}: ${err.message}`).join("; ")
-          } else if (parsed.message) {
-            errorMessage = parsed.message
-          }
-        } catch {
-          // Se não for JSON, usar mensagem original
+        const parsed = JSON.parse(error.message)
+        if (parsed.errors && Array.isArray(parsed.errors)) {
+          validationErrors = parsed.errors.map((err: any) =>
+            formatErrorMessage(err, parsed.property)
+          )
         }
       }
+
+      const errorMessage =
+        validationErrors.length > 0
+          ? validationErrors.map(err => `${err.field}: ${err.message}`).join("; ")
+          : error.message
 
       return {
         message: "Erro de validação",

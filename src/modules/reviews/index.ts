@@ -7,6 +7,7 @@ import {
   errorSchema,
   gameIdParamSchema,
   reviewResponseSchema,
+  reviewsResponseSchema,
   updateReviewResponseSchema,
   updateReviewSchema
 } from "./schemas"
@@ -40,7 +41,8 @@ export const reviews = new Elysia({ prefix: "/reviews" })
         summary: "Criar review de um jogo",
         description:
           "Cria um review de um jogo no perfil do usuário autenticado. O review text é obrigatório.",
-        tags: ["Reviews"]
+        tags: ["Reviews"],
+        security: [{ bearerAuth: [] }]
       }
     }
   )
@@ -57,17 +59,15 @@ export const reviews = new Elysia({ prefix: "/reviews" })
     {
       auth: true,
       response: {
-        200: z.object({
-          message: z.string(),
-          data: z.array(reviewResponseSchema.shape.data)
-        }),
+        200: reviewsResponseSchema,
         401: errorSchema,
         500: errorSchema
       },
       detail: {
         summary: "Listar reviews do usuário",
         description: "Retorna todos os reviews do usuário autenticado (perfil do usuário).",
-        tags: ["Reviews"]
+        tags: ["Reviews"],
+        security: [{ bearerAuth: [] }]
       }
     }
   )
@@ -94,7 +94,8 @@ export const reviews = new Elysia({ prefix: "/reviews" })
       detail: {
         summary: "Buscar review por ID do jogo",
         description: "Retorna o review de um jogo específico do usuário autenticado.",
-        tags: ["Reviews"]
+        tags: ["Reviews"],
+        security: [{ bearerAuth: [] }]
       }
     }
   )
@@ -123,7 +124,8 @@ export const reviews = new Elysia({ prefix: "/reviews" })
         summary: "Atualizar review",
         description:
           "Atualiza um review existente do usuário autenticado (status, rating, review text, etc.).",
-        tags: ["Reviews"]
+        tags: ["Reviews"],
+        security: [{ bearerAuth: [] }]
       }
     }
   )
@@ -151,7 +153,8 @@ export const reviews = new Elysia({ prefix: "/reviews" })
       detail: {
         summary: "Remover review",
         description: "Remove um review do perfil do usuário autenticado.",
-        tags: ["Reviews"]
+        tags: ["Reviews"],
+        security: [{ bearerAuth: [] }]
       }
     }
   )

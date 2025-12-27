@@ -28,10 +28,7 @@ export const reviewSchema = z.object({
 export const createReviewSchema = z
   .object({
     gameId: z.cuid("Game ID deve ser um CUID válido").describe("ID do jogo a ser avaliado"),
-    status: gameStatusEnum
-      .optional()
-      .default("WANT_TO_PLAY")
-      .describe("Status do jogo (WANT_TO_PLAY, PLAYING, COMPLETED, ON_HOLD, DROPPED)"),
+    status: gameStatusEnum.optional().default("WANT_TO_PLAY").describe("Status do jogo"),
     rating: z
       .number()
       .int("Rating deve ser um número inteiro")
@@ -39,18 +36,18 @@ export const createReviewSchema = z
       .max(5, "Rating deve ser no máximo 5")
       .optional()
       .nullable()
-      .describe("Avaliação do jogo (1-5 estrelas)"),
+      .describe("Avaliação do jogo de 1 a 5 estrelas"),
     review: z
       .string()
       .min(1, "Review é obrigatório")
       .max(5000, "Review deve ter no máximo 5000 caracteres")
-      .describe("Review/avaliação textual do jogo"),
+      .describe("Avaliação textual do jogo"),
     completedAt: z.iso
-      .datetime("Completed at deve ser uma data válida (ISO 8601)")
+      .datetime("A data de conclusão deve ser uma data válida")
       .optional()
       .nullable()
       .or(z.date().optional().nullable())
-      .describe("Data de conclusão do jogo (ISO 8601)")
+      .describe("Data de conclusão do jogo")
   })
   .describe("Schema para criar um review de um jogo")
 
@@ -116,6 +113,7 @@ export const errorSchema = z.object({
 export const createReviewResponseSchema = ApiResponseBase(reviewSchema)
 export const updateReviewResponseSchema = ApiResponseBase(reviewSchema)
 export const reviewResponseSchema = ApiResponseBase(reviewSchema)
+export const reviewsResponseSchema = ApiResponseBase(z.array(reviewSchema))
 
 export type Review = z.infer<typeof reviewSchema>
 export type CreateReviewInput = z.infer<typeof createReviewSchema>
